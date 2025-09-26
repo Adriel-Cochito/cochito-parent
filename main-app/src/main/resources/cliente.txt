@@ -1,0 +1,3 @@
+Ana Oliveira;11122233344;ana.oliveira@email.com;11987654321;VIP;38020-433;Rua das Palmeiras, 456;Casa 2;;Santa Beatriz;Uberaba;MG;Uberaba
+Carlos Ferreira;55566677788;carlos.ferreira@email.com;11555555555;Regular;38065-065;Av. Faria Lima, 2000;Apto 1001;Torre A;Governador Valadares;Uberaba;MG;Uberaba
+Lucia Mendes;99988877766;lucia.mendes@email.com;11444444444;Premium;38015-000;Rua Oscar Freire, 300;Loja 15;;Centro;Uberaba;MG;Uberaba

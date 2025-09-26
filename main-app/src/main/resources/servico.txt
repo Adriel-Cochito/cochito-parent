@@ -1,0 +1,10 @@
+Limpeza Residencial;150.00;Serviço completo de limpeza em residências
+Manutenção de Computadores;200.00;Reparo e manutenção de equipamentos de informática
+Consultoria Empresarial;500.00;Consultoria estratégica para empresas
+Instalação de Software;100.00;Instalação e configuração de softwares
+Treinamento de Funcionários;300.00;Capacitação e treinamento de equipes
+Instalação de Ar Condicionado;350.00;Instalação e configuração de ar condicionado residencial
+Reparo de Eletrodomésticos;180.00;Manutenção e reparo de eletrodomésticos em domicílio
+Instalação de Internet;120.00;Instalação e configuração de internet residencial
+Manutenção de Piscina;250.00;Limpeza e manutenção de piscinas residenciais
+Instalação de Câmeras de Segurança;400.00;Instalação de sistema de segurança residencial
