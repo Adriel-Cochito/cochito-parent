@@ -38,30 +38,31 @@ public class FuncionarioLoader implements ApplicationRunner {
 
 			campos = linha.split(";");
 
-			Funcionario funcionario = new Funcionario();
-			funcionario.setNome(campos[0]);
-			funcionario.setEmail(campos[1]);
-			funcionario.setCpf(campos[2]);
-			funcionario.setTelefone(campos[3]);
-			funcionario.setAtivo(Boolean.valueOf(campos[4]));
-
-			Endereco endereco = new Endereco();
-			endereco.setCep(campos[5]);
-			endereco.setLogradouro(campos[6]);
-			endereco.setComplemento(campos[7]);
-			endereco.setUnidade(campos[8]);
-			endereco.setBairro(campos[9]);
-			endereco.setLocalidade(campos[10]);
-			endereco.setUf(campos[11]);
-			endereco.setEstado(campos[12]);
-
-			funcionario.setEndereco(endereco);
-
 			try {
+				Funcionario funcionario = new Funcionario();
+				funcionario.setNome(campos[0]);
+				funcionario.setEmail(campos[1]);
+				funcionario.setCpf(campos[2]);
+				funcionario.setTelefone(campos[3]);
+				// Pular campos[4] que é a senha (não mais necessária no modelo)
+				funcionario.setAtivo(Boolean.valueOf(campos[5]));
+
+				Endereco endereco = new Endereco();
+				endereco.setCep(campos[6]);
+				endereco.setLogradouro(campos[7]);
+				endereco.setComplemento(campos[8]);
+				endereco.setUnidade(campos[9]);
+				endereco.setBairro(campos[10]);
+				endereco.setLocalidade(campos[11]);
+				endereco.setUf(campos[12]);
+				endereco.setEstado(campos[13]);
+
+				funcionario.setEndereco(endereco);
+
 				funcionarioService.incluir(funcionario);
 				System.out.println("  [OK] Funcionario " + funcionario.getNome() + " incluído com sucesso.");
 			} catch (Exception e) {
-				System.err.println("Deu erro! " + e.getMessage());
+				System.err.println("Erro ao incluir funcionário " + campos[0] + ": " + e.getMessage());
 			}
 
 			linha = leitura.readLine();

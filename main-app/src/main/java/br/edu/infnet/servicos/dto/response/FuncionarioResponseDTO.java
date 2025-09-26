@@ -9,8 +9,6 @@ public class FuncionarioResponseDTO {
     private String email;
     private String cpf;
     private String telefone;
-    private Integer matricula;
-    private Double salario;
     private boolean ativo;
     private EnderecoResponseDTO endereco;
     
@@ -71,21 +69,6 @@ public class FuncionarioResponseDTO {
         this.telefone = telefone;
     }
     
-    public Integer getMatricula() {
-        return matricula;
-    }
-    
-    public void setMatricula(Integer matricula) {
-        this.matricula = matricula;
-    }
-    
-    public Double getSalario() {
-        return salario;
-    }
-    
-    public void setSalario(Double salario) {
-        this.salario = salario;
-    }
     
     public boolean isAtivo() {
         return ativo;

@@ -6,7 +6,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Cliente extends Pessoa {
+public class Cliente extends Usuario {
 
     private String fidelidade;
 

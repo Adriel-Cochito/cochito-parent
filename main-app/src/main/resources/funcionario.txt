@@ -1,3 +1,3 @@
-João Silva;joao.silva@email.com;12345678901;11999999999;true;38065-065;Rua das Flores, 123;Apto 45;Bloco A;Governador Valadares;Uberaba;MG;Uberaba
-Maria Santos;maria.santos@email.com;98765432109;11888888888;true;38020-433;Av. Paulista, 1000;Sala 200;;Santa Beatriz;Uberaba;MG;Uberaba
-Pedro Costa;pedro.costa@email.com;11122233344;11777777777;false;38015-000;Rua Augusta, 500;Loja 10;;Centro;Uberaba;MG;Uberaba
+João Silva;joao.silva@email.com;12345678901;11999999999;admin123;true;38065-065;Rua das Flores, 123;Apto 45;Bloco A;Governador Valadares;Uberaba;MG;Uberaba
+Maria Santos;maria.santos@email.com;98765432109;11888888888;admin123;true;38020-433;Av. Paulista, 1000;Sala 200;;Santa Beatriz;Uberaba;MG;Uberaba
+Pedro Costa;pedro.costa@email.com;11122233344;11777777777;admin123;false;38015-000;Rua Augusta, 500;Loja 10;;Centro;Uberaba;MG;Uberaba

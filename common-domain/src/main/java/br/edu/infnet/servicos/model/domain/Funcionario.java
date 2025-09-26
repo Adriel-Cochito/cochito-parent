@@ -6,7 +6,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Funcionario extends Pessoa {
+public class Funcionario extends Usuario {
 	
 
 	private boolean ativo;

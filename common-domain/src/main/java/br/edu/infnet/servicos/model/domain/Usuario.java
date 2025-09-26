@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public abstract class Pessoa {
+public abstract class Usuario {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,7 @@ public abstract class Pessoa {
 	
 	private String telefone;
 	
-	//TODO Criação do construtor de pessoa com nome, email, cpf e telefone
+	//TODO Criação do construtor de usuario com nome, email, cpf e telefone
 	
 	@Override
 	public String toString() {
@@ -68,6 +68,17 @@ public abstract class Pessoa {
 	}
 
 	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+	// Construtor padrão
+	public Usuario() {}
+
+	// Construtor com parâmetros
+	public Usuario(String nome, String email, String cpf, String telefone) {
+		this.nome = nome;
+		this.email = email;
+		this.cpf = cpf;
 		this.telefone = telefone;
 	}
 }
