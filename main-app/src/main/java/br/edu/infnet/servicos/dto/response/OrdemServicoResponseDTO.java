@@ -18,7 +18,7 @@ public class OrdemServicoResponseDTO {
     private List<ItemServicoResponseDTO> itensServicos;
     
     // Dados orquestrados com APIs externas
-    private DistanciaResponseDTO distanciaFuncionarioCliente;
+    private DistanciaResponseDTO distancia;
 
     // Construtores
     public OrdemServicoResponseDTO() {}
@@ -47,7 +47,7 @@ public class OrdemServicoResponseDTO {
         }
         
         // Orquestração: dados de distância calculados
-        this.distanciaFuncionarioCliente = distancia;
+        this.distancia = distancia;
     }
     
     // Getters e Setters
@@ -107,11 +107,11 @@ public class OrdemServicoResponseDTO {
         this.itensServicos = itensServicos;
     }
     
-    public DistanciaResponseDTO getDistanciaFuncionarioCliente() {
-        return distanciaFuncionarioCliente;
+    public DistanciaResponseDTO getDistancia() {
+        return distancia;
     }
     
-    public void setDistanciaFuncionarioCliente(DistanciaResponseDTO distanciaFuncionarioCliente) {
-        this.distanciaFuncionarioCliente = distanciaFuncionarioCliente;
+    public void setDistancia(DistanciaResponseDTO distancia) {
+        this.distancia = distancia;
     }
 }

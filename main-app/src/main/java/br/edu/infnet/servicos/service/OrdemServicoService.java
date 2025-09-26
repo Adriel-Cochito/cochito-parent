@@ -85,6 +85,17 @@ public class OrdemServicoService implements CrudService<OrdemServico, Integer> {
 	}
 
 	@Transactional
+	public OrdemServico alterar(Integer id, OrdemServicoRequestDTO ordemServicoRequest) {
+		buscarPorId(id); // Verifica se existe
+		
+		OrdemServico ordemServico = converterParaEntidade(ordemServicoRequest);
+		validarOrdemServico(ordemServico);
+		ordemServico.setId(id);
+		
+		return ordemServicoRepository.save(ordemServico);
+	}
+
+	@Transactional
 	public OrdemServico atualizar(Integer id, OrdemServico ordemServico) {
 		return alterar(id, ordemServico);
 	}
@@ -142,10 +153,21 @@ public class OrdemServicoService implements CrudService<OrdemServico, Integer> {
 	public OrdemServico buscarPorId(Integer id) {
 		return obterPorId(id);
 	}
+	
+	// Método auxiliar para buscar ordem sem calcular distância (para orquestração)
+	private OrdemServico buscarOrdemSimples(Integer id) {
+		if (id == null || id <= 0) {
+			throw new IllegalArgumentException("ID inválido");
+		}
+
+		return ordemServicoRepository.findById(id)
+			.orElseThrow(() -> new RecursoNaoEncontradoException("Ordem de Serviço não encontrada"));
+	}
 
 	// ORQUESTRAÇÃO: Método que retorna DTO com dados das APIs externas
 	public OrdemServicoResponseDTO buscarPorIdComDistancia(Integer id) {
-		OrdemServico ordemServico = buscarPorId(id);
+		// Busca ordem SEM calcular distância na entidade
+		OrdemServico ordemServico = buscarOrdemSimples(id);
 		
 		DistanciaResponseDTO distancia = null;
 		

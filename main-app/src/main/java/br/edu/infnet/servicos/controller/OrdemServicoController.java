@@ -52,8 +52,8 @@ public class OrdemServicoController {
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<OrdemServico> alterarOrdem(@PathVariable Integer id,
-			@Valid @RequestBody OrdemServico ordemServico) {
-		OrdemServico ordemAlterada = ordemServicoService.alterar(id, ordemServico);
+			@Valid @RequestBody OrdemServicoRequestDTO ordemServicoRequest) {
+		OrdemServico ordemAlterada = ordemServicoService.alterar(id, ordemServicoRequest);
 		return ResponseEntity.ok(ordemAlterada);
 	}
 
