@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.edu.infnet.servicos.dto.request.OrdemServicoRequestDTO;
 import br.edu.infnet.servicos.dto.response.DistanciaResponseDTO;
@@ -20,6 +22,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class OrdemServicoService implements CrudService<OrdemServico, Integer> {
+
+	private static final Logger logger = LoggerFactory.getLogger(OrdemServicoService.class);
 
 	private final OrdemServicoRepository ordemServicoRepository;
 	private final DistanciaService distanciaService;
@@ -38,6 +42,7 @@ public class OrdemServicoService implements CrudService<OrdemServico, Integer> {
 
 	@Transactional
 	public OrdemServico criar(OrdemServicoRequestDTO ordemServicoRequest) {
+		logger.info("Criando nova ordem de serviço");
 		OrdemServico ordemServico = converterParaEntidade(ordemServicoRequest);
 		validarOrdemServico(ordemServico);
 
@@ -49,7 +54,9 @@ public class OrdemServicoService implements CrudService<OrdemServico, Integer> {
 			ordemServico.setStatus("PENDENTE");
 		}
 
-		return ordemServicoRepository.save(ordemServico);
+		OrdemServico salvo = ordemServicoRepository.save(ordemServico);
+		logger.info("Ordem de serviço criada: id={}", salvo.getId());
+		return salvo;
 	}
 
 	@Override
@@ -86,13 +93,14 @@ public class OrdemServicoService implements CrudService<OrdemServico, Integer> {
 
 	@Transactional
 	public OrdemServico alterar(Integer id, OrdemServicoRequestDTO ordemServicoRequest) {
+		logger.info("Alterando ordem de serviço id: {}", id);
 		buscarPorId(id); // Verifica se existe
-		
 		OrdemServico ordemServico = converterParaEntidade(ordemServicoRequest);
 		validarOrdemServico(ordemServico);
 		ordemServico.setId(id);
-		
-		return ordemServicoRepository.save(ordemServico);
+		OrdemServico alterada = ordemServicoRepository.save(ordemServico);
+		logger.info("Ordem de serviço alterada: id={}", alterada.getId());
+		return alterada;
 	}
 
 	@Transactional
@@ -103,8 +111,10 @@ public class OrdemServicoService implements CrudService<OrdemServico, Integer> {
 	@Override
 	@Transactional
 	public void excluir(Integer id) {
+		logger.info("Excluindo ordem de serviço id: {}", id);
 		OrdemServico ordemServico = buscarPorId(id);
 		ordemServicoRepository.delete(ordemServico);
+		logger.info("Ordem de serviço excluída: id={}", id);
 	}
 
 	@Transactional

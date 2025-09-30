@@ -2,6 +2,8 @@ package br.edu.infnet.servicos.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import br.edu.infnet.servicos.clients.AwesomeCepFeignClient;
 import br.edu.infnet.servicos.clients.AwesomeCepFeignClient.AwesomeCepResponse;
@@ -11,6 +13,8 @@ import br.edu.infnet.servicos.dto.response.DistanciaResponseDTO;
 
 @Service
 public class DistanciaService {
+
+	private static final Logger logger = LoggerFactory.getLogger(DistanciaService.class);
 
 	private final AwesomeCepFeignClient awesomeCepFeignClient;
 	private final OpenRouteFeignClient openRouteFeignClient;
@@ -24,14 +28,12 @@ public class DistanciaService {
 	}
 
 	public DistanciaResponseDTO calcularDistancia(String cepOrigem, String cepDestino) {
-		
+		logger.info("Calculando distância entre {} e {}", cepOrigem, cepDestino);
 		cepOrigem = cepOrigem.replaceAll("\\D", "");
-	    cepDestino = cepDestino.replaceAll("\\D", "");
-	    
+		cepDestino = cepDestino.replaceAll("\\D", "");
 		// Consulta os CEPs para obter coordenadas
 		AwesomeCepResponse origemResponse = awesomeCepFeignClient.consultarCep(cepOrigem);
 		AwesomeCepResponse destinoResponse = awesomeCepFeignClient.consultarCep(cepDestino);
-		
 
 		// Prepara o resultado
 		DistanciaResponseDTO resultado = new DistanciaResponseDTO();
@@ -49,7 +51,7 @@ public class DistanciaService {
 		String coordDestino = destinoResponse.getLng() + "," + destinoResponse.getLat();
 
 		try {
-			// Tenta calcular rota pela API
+			logger.info("Chamando OpenRouteFeignClient para calcular rota");
 			OpenRouteResponse rotaResponse = openRouteFeignClient.calcularRota(apiKey, coordOrigem, coordDestino);
 
 			// Obtém distância e tempo da resposta
@@ -58,12 +60,11 @@ public class DistanciaService {
 
 			// Converte para km e minutos com arredondamento para 2 casas decimais
 			resultado.setDistanciaKm(Math.round(distanciaMetros / 10.0) / 100.0); // 3222.2 / 1000 = 3.22
-
-			// Modificação aqui para garantir exatamente 6.67 para o teste
-			// 400 segundos / 60 = 6.67 minutos
 			resultado.setTempoMinutos(Math.round(tempoSegundos * 100.0 / 60.0) / 100.0);
 
+			logger.info("Distância calculada via OpenRoute: {} km, {} min", resultado.getDistanciaKm(), resultado.getTempoMinutos());
 		} catch (Exception e) {
+			logger.warn("Falha ao chamar OpenRouteFeignClient, usando fallback Haversine. Erro: {}", e.getMessage());
 			// Fallback: calcula distância usando Haversine
 			double lat1 = Double.parseDouble(origemResponse.getLat());
 			double lng1 = Double.parseDouble(origemResponse.getLng());
@@ -75,6 +76,7 @@ public class DistanciaService {
 
 			resultado.setDistanciaKm(Math.round(distanciaKm * 100.0) / 100.0); // Arredonda para 2 casas decimais
 			resultado.setTempoMinutos(Math.round(tempoMinutos * 100.0) / 100.0);
+			logger.info("Distância calculada via Haversine: {} km, {} min", resultado.getDistanciaKm(), resultado.getTempoMinutos());
 		}
 
 		return resultado;

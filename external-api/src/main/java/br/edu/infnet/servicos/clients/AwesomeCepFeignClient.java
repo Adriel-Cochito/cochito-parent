@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "awesomeCepClient", url = "https://cep.awesomeapi.com.br")
 public interface AwesomeCepFeignClient {
-    
+
     @GetMapping("/json/{cep}")
     AwesomeCepResponse consultarCep(@PathVariable("cep") String cep);
     
