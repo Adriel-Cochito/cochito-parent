@@ -25,9 +25,11 @@ import br.edu.infnet.servicos.dto.response.OrdemServicoResponseDTO;
 import br.edu.infnet.servicos.model.domain.OrdemServico;
 import br.edu.infnet.servicos.service.OrdemServicoService;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/ordens-servico")
+@Tag(name = "4. Ordens de Serviço", description = "Gerenciamento de ordens de serviço")
 public class OrdemServicoController {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrdemServicoController.class);
@@ -40,7 +42,7 @@ public class OrdemServicoController {
 
 	// CRUD Básico
 
-	@GetMapping
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public List<OrdemServicoResponseDTO> obterOrdens() {
 		logger.info("Listando todas as ordens de serviço");
 		return ordemServicoService.obterLista().stream()
@@ -49,7 +51,7 @@ public class OrdemServicoController {
 	}
 
 	@GetMapping(value = "/{id}")
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public OrdemServicoResponseDTO obterPorId(@PathVariable Integer id) {
 		logger.info("Buscando ordem de serviço por id: {}", id);
 		OrdemServico ordem = ordemServicoService.obterPorId(id);

@@ -22,11 +22,20 @@ import br.edu.infnet.servicos.repository.FuncionarioRepository;
 import br.edu.infnet.servicos.security.JwtUtil;
 import jakarta.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/")
+@Tag(name = "1. Autenticação", description = "Endpoints para autenticação e informações da API")
 public class ApiController {
 
 	private final AuthenticationManager authenticationManager;
@@ -45,12 +54,34 @@ public class ApiController {
 	}
 
 	@GetMapping
+	@Operation(summary = "Informações da API", description = "Retorna informações básicas da API")
 	public String hello() {
 		return "Hello!!! - Cochito Services API";
 	}
 
 	@PostMapping("/api/auth/login")
-	public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
+	@Operation(summary = "Realizar Login", description = "Autentica usuário e retorna token JWT")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Login realizado com sucesso"),
+		@ApiResponse(responseCode = "401", description = "Credenciais inválidas"),
+		@ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+	})
+	public ResponseEntity<LoginResponseDTO> login(
+		@io.swagger.v3.oas.annotations.parameters.RequestBody(
+			description = "Credenciais de login",
+			required = true,
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(implementation = LoginRequestDTO.class),
+				examples = @ExampleObject(
+					name = "Login Admin",
+					summary = "Credenciais de administrador",
+					description = "Use estas credenciais para testar como administrador",
+					value = "{\n  \"email\": \"joao.silva@email.com\",\n  \"password\": \"admin123\"\n}"
+				)
+			)
+		)
+		@Valid @RequestBody LoginRequestDTO loginRequest) {
 		try {
 			// Autentica o usuário
 			Authentication authentication = authenticationManager.authenticate(

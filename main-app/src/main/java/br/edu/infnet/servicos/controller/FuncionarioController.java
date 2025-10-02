@@ -18,9 +18,11 @@ import br.edu.infnet.servicos.dto.request.FuncionarioRequestDTO;
 import br.edu.infnet.servicos.dto.response.FuncionarioResponseDTO;
 import br.edu.infnet.servicos.service.FuncionarioService;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/funcionarios")
+@Tag(name = "5. Funcionários", description = "Gerenciamento de funcionários")
 public class FuncionarioController {
 
 	private final FuncionarioService funcionarioService;

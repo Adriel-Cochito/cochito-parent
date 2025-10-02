@@ -22,9 +22,11 @@ import br.edu.infnet.servicos.service.ServicoService;
 import br.edu.infnet.servicos.dto.request.ServicoRequestDTO;
 import br.edu.infnet.servicos.dto.response.ServicoResponseDTO;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/servicos")
+@Tag(name = "3. Serviços", description = "Gerenciamento de serviços")
 public class ServicoController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ServicoController.class);

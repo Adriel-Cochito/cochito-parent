@@ -22,9 +22,11 @@ import br.edu.infnet.servicos.model.domain.Cliente;
 import br.edu.infnet.servicos.model.domain.Endereco;
 import br.edu.infnet.servicos.service.ClienteService;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/clientes")
+@Tag(name = "2. Clientes", description = "Gerenciamento de clientes")
 public class ClienteController {
 
 	private final ClienteService clienteService;

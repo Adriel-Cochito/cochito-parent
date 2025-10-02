@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.infnet.servicos.dto.response.DistanciaResponseDTO;
 import br.edu.infnet.servicos.service.DistanciaService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/distancia")
+@Tag(name = "6. Distância", description = "Cálculo de distâncias entre CEPs")
 public class DistanciaController {
 
 	

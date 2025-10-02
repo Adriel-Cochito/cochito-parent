@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.infnet.servicos.exceptions.AuthenticationException;
 import br.edu.infnet.servicos.exceptions.AccessDeniedException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/test-exceptions")
+@Tag(name = "7. Testes", description = "Endpoints para teste de exceções")
 public class ExceptionTestController {
 
     @GetMapping("/auth")
