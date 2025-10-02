@@ -1,6 +1,7 @@
 package br.edu.infnet.servicos.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import br.edu.infnet.servicos.model.domain.Servico;
 import br.edu.infnet.servicos.service.ServicoService;
 import br.edu.infnet.servicos.dto.request.ServicoRequestDTO;
+import br.edu.infnet.servicos.dto.response.ServicoResponseDTO;
 import jakarta.validation.Valid;
 
 @RestController
@@ -35,37 +37,38 @@ public class ServicoController {
 
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Servico> incluirServico(@Valid @RequestBody ServicoRequestDTO dto) {
+	public ResponseEntity<ServicoResponseDTO> incluirServico(@Valid @RequestBody ServicoRequestDTO dto) {
 		logger.info("Recebida requisição para criar serviço: {}", dto.getTitulo());
-		Servico servico = new Servico();
-		servico.setTitulo(dto.getTitulo());
-		servico.setPreco(dto.getPreco());
-		servico.setDescricao(dto.getDescricao());
+		Servico servico = convertToEntity(dto);
 		Servico servicoSalvo = servicoService.incluir(servico);
 		logger.info("Serviço criado com sucesso: id={}, titulo={}", servicoSalvo.getId(), servicoSalvo.getTitulo());
-		return ResponseEntity.status(HttpStatus.CREATED).body(servicoSalvo);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ServicoResponseDTO(servicoSalvo));
 	}
 	
 	@GetMapping
-	public List<Servico> obterServico() {
+	public List<ServicoResponseDTO> obterServico() {
 		logger.info("Listando todos os serviços");
-		return servicoService.obterLista();
+		return servicoService.obterLista().stream()
+				.map(ServicoResponseDTO::new)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping(value = "/{id}")
-	public Servico obterPorId(@PathVariable Integer id) {
+	public ServicoResponseDTO obterPorId(@PathVariable Integer id) {
 		logger.info("Buscando serviço por id: {}", id);
-		return servicoService.obterPorId(id);
+		Servico servico = servicoService.obterPorId(id);
+		return new ServicoResponseDTO(servico);
 	}
 
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Servico> alterarServico(@PathVariable Integer id,
-			@Valid @RequestBody Servico servico) {
+	public ResponseEntity<ServicoResponseDTO> alterarServico(@PathVariable Integer id,
+			@Valid @RequestBody ServicoRequestDTO dto) {
 		logger.info("Alterando serviço id: {}", id);
+		Servico servico = convertToEntity(dto);
 		Servico servicoAlterado = servicoService.alterar(id, servico);
 		logger.info("Serviço alterado com sucesso: id={}, titulo={}", servicoAlterado.getId(), servicoAlterado.getTitulo());
-		return ResponseEntity.ok(servicoAlterado);
+		return ResponseEntity.ok(new ServicoResponseDTO(servicoAlterado));
 	}
 
 	@DeleteMapping(value = "/{id}")
@@ -75,5 +78,14 @@ public class ServicoController {
 		servicoService.excluir(id);
 		logger.info("Serviço excluído com sucesso: id={}", id);
 		return ResponseEntity.noContent().build();
+	}
+
+	// Método helper para converter DTO para entidade
+	private Servico convertToEntity(ServicoRequestDTO dto) {
+		Servico servico = new Servico();
+		servico.setTitulo(dto.getTitulo());
+		servico.setPreco(dto.getPreco());
+		servico.setDescricao(dto.getDescricao());
+		return servico;
 	}
 }

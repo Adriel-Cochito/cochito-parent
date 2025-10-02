@@ -1,7 +1,7 @@
 package br.edu.infnet.servicos.controller;
 
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.infnet.servicos.dto.request.ClienteCreateRequestDTO;
+import br.edu.infnet.servicos.dto.request.ClienteFidelidadeRequestDTO;
+import br.edu.infnet.servicos.dto.response.ClienteResponseDTO;
 import br.edu.infnet.servicos.model.domain.Cliente;
+import br.edu.infnet.servicos.model.domain.Endereco;
 import br.edu.infnet.servicos.service.ClienteService;
 import jakarta.validation.Valid;
 
@@ -30,25 +34,30 @@ public class ClienteController {
 	}
 
 	@GetMapping
-	public List<Cliente> obterClientes() {
-		return clienteService.obterLista();
+	public List<ClienteResponseDTO> obterClientes() {
+		return clienteService.obterLista().stream()
+				.map(ClienteResponseDTO::new)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping(value = "/{id}")
-	public Cliente obterPorId(@PathVariable Integer id) {
-		return clienteService.obterPorId(id);
+	public ClienteResponseDTO obterPorId(@PathVariable Integer id) {
+		Cliente cliente = clienteService.obterPorId(id);
+		return new ClienteResponseDTO(cliente);
 	}
 
 	@PostMapping
-	public ResponseEntity<Cliente> incluirCliente(@Valid @RequestBody Cliente cliente) {
+	public ResponseEntity<ClienteResponseDTO> incluirCliente(@Valid @RequestBody ClienteCreateRequestDTO clienteRequest) {
+		Cliente cliente = convertToEntity(clienteRequest);
 		Cliente clienteSalvo = clienteService.incluir(cliente);
-		return ResponseEntity.status(HttpStatus.CREATED).body(clienteSalvo);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ClienteResponseDTO(clienteSalvo));
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Cliente> alterarCliente(@PathVariable Integer id, @Valid @RequestBody Cliente cliente) {
+	public ResponseEntity<ClienteResponseDTO> alterarCliente(@PathVariable Integer id, @Valid @RequestBody ClienteCreateRequestDTO clienteRequest) {
+		Cliente cliente = convertToEntity(clienteRequest);
 		Cliente clienteAlterado = clienteService.alterar(id, cliente);
-		return ResponseEntity.ok(clienteAlterado);
+		return ResponseEntity.ok(new ClienteResponseDTO(clienteAlterado));
 	}
 
 	@DeleteMapping(value = "/{id}")
@@ -58,9 +67,33 @@ public class ClienteController {
 	}
 
 	@PatchMapping(value = "/{id}/fidelidade")
-	public ResponseEntity<Cliente> atualizarFidelidade(@PathVariable Integer id, @RequestBody Map<String, String> request) {
-		String fidelidade = request.get("fidelidade");
-		return ResponseEntity.ok(clienteService.atualizarFidelidade(id, fidelidade));
+	public ResponseEntity<ClienteResponseDTO> atualizarFidelidade(@PathVariable Integer id, @Valid @RequestBody ClienteFidelidadeRequestDTO request) {
+		Cliente clienteAtualizado = clienteService.atualizarFidelidade(id, request.getFidelidade());
+		return ResponseEntity.ok(new ClienteResponseDTO(clienteAtualizado));
 	}
 
+	// Método helper para converter DTO para entidade
+	private Cliente convertToEntity(ClienteCreateRequestDTO dto) {
+		Cliente cliente = new Cliente();
+		cliente.setNome(dto.getNome());
+		cliente.setEmail(dto.getEmail());
+		cliente.setCpf(dto.getCpf());
+		cliente.setTelefone(dto.getTelefone());
+		cliente.setFidelidade(dto.getFidelidade());
+
+		if (dto.getEndereco() != null) {
+			Endereco endereco = new Endereco();
+			endereco.setCep(dto.getEndereco().getCep());
+			endereco.setLogradouro(dto.getEndereco().getLogradouro());
+			endereco.setComplemento(dto.getEndereco().getComplemento());
+			endereco.setUnidade(dto.getEndereco().getUnidade());
+			endereco.setBairro(dto.getEndereco().getBairro());
+			endereco.setLocalidade(dto.getEndereco().getLocalidade());
+			endereco.setUf(dto.getEndereco().getUf());
+			endereco.setEstado(dto.getEndereco().getEstado());
+			cliente.setEndereco(endereco);
+		}
+
+		return cliente;
+	}
 }

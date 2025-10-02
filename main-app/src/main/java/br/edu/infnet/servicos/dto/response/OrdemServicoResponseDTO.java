@@ -23,6 +23,10 @@ public class OrdemServicoResponseDTO {
     // Construtores
     public OrdemServicoResponseDTO() {}
 
+    public OrdemServicoResponseDTO(OrdemServico ordemServico) {
+        this(ordemServico, null);
+    }
+
     public OrdemServicoResponseDTO(OrdemServico ordemServico, DistanciaResponseDTO distancia) {
         this.id = ordemServico.getId();
         this.status = ordemServico.getStatus();

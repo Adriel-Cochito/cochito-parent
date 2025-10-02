@@ -2,6 +2,7 @@ package br.edu.infnet.servicos.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -40,35 +41,38 @@ public class OrdemServicoController {
 	// CRUD Básico
 
 	@GetMapping
-	public List<OrdemServico> obterOrdens() {
+	public List<OrdemServicoResponseDTO> obterOrdens() {
 		logger.info("Listando todas as ordens de serviço");
-		return ordemServicoService.obterLista();
+		return ordemServicoService.obterLista().stream()
+				.map(OrdemServicoResponseDTO::new)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping(value = "/{id}")
 	@PreAuthorize("hasRole('USER')")
-	public OrdemServico obterPorId(@PathVariable Integer id) {
+	public OrdemServicoResponseDTO obterPorId(@PathVariable Integer id) {
 		logger.info("Buscando ordem de serviço por id: {}", id);
-		return ordemServicoService.obterPorId(id);
+		OrdemServico ordem = ordemServicoService.obterPorId(id);
+		return new OrdemServicoResponseDTO(ordem);
 	}
 
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<OrdemServico> incluirOrdem(@Valid @RequestBody OrdemServicoRequestDTO ordemServicoRequest) {
+	public ResponseEntity<OrdemServicoResponseDTO> incluirOrdem(@Valid @RequestBody OrdemServicoRequestDTO ordemServicoRequest) {
 		logger.info("Recebida requisição para criar ordem de serviço");
 		OrdemServico ordemSalva = ordemServicoService.criar(ordemServicoRequest);
 		logger.info("Ordem de serviço criada com sucesso: id={}", ordemSalva.getId());
-		return ResponseEntity.status(HttpStatus.CREATED).body(ordemSalva);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new OrdemServicoResponseDTO(ordemSalva));
 	}
 
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<OrdemServico> alterarOrdem(@PathVariable Integer id,
+	public ResponseEntity<OrdemServicoResponseDTO> alterarOrdem(@PathVariable Integer id,
 			@Valid @RequestBody OrdemServicoRequestDTO ordemServicoRequest) {
 		logger.info("Alterando ordem de serviço id: {}", id);
 		OrdemServico ordemAlterada = ordemServicoService.alterar(id, ordemServicoRequest);
 		logger.info("Ordem de serviço alterada com sucesso: id={}", ordemAlterada.getId());
-		return ResponseEntity.ok(ordemAlterada);
+		return ResponseEntity.ok(new OrdemServicoResponseDTO(ordemAlterada));
 	}
 
 	@DeleteMapping(value = "/{id}")
@@ -91,42 +95,56 @@ public class OrdemServicoController {
 	// Endpoints específicos usando Query Methods (Feature 4)
 
 	@GetMapping("/status/{status}")
-	public List<OrdemServico> buscarPorStatus(@PathVariable String status) {
-		return ordemServicoService.buscarPorStatus(status);
+	public List<OrdemServicoResponseDTO> buscarPorStatus(@PathVariable String status) {
+		return ordemServicoService.buscarPorStatus(status).stream()
+				.map(OrdemServicoResponseDTO::new)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/cliente/{clienteId}/status/{status}")
-	public List<OrdemServico> buscarPorClienteEStatus(@PathVariable Integer clienteId, 
+	public List<OrdemServicoResponseDTO> buscarPorClienteEStatus(@PathVariable Integer clienteId, 
 			@PathVariable String status) {
-		return ordemServicoService.buscarPorClienteEStatus(clienteId, status);
+		return ordemServicoService.buscarPorClienteEStatus(clienteId, status).stream()
+				.map(OrdemServicoResponseDTO::new)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/funcionario/{funcionarioId}/status/{status}")
-	public List<OrdemServico> buscarPorFuncionarioEStatus(@PathVariable Integer funcionarioId, 
+	public List<OrdemServicoResponseDTO> buscarPorFuncionarioEStatus(@PathVariable Integer funcionarioId, 
 			@PathVariable String status) {
-		return ordemServicoService.buscarPorFuncionarioEStatus(funcionarioId, status);
+		return ordemServicoService.buscarPorFuncionarioEStatus(funcionarioId, status).stream()
+				.map(OrdemServicoResponseDTO::new)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/periodo")
-	public List<OrdemServico> buscarPorPeriodo(
+	public List<OrdemServicoResponseDTO> buscarPorPeriodo(
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
-		return ordemServicoService.buscarPorPeriodo(inicio, fim);
+		return ordemServicoService.buscarPorPeriodo(inicio, fim).stream()
+				.map(OrdemServicoResponseDTO::new)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/servico")
-	public List<OrdemServico> buscarPorServicoTitulo(@RequestParam String titulo) {
-		return ordemServicoService.buscarPorServicoTitulo(titulo);
+	public List<OrdemServicoResponseDTO> buscarPorServicoTitulo(@RequestParam String titulo) {
+		return ordemServicoService.buscarPorServicoTitulo(titulo).stream()
+				.map(OrdemServicoResponseDTO::new)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/cliente")
-	public List<OrdemServico> buscarPorClienteNome(@RequestParam String nome) {
-		return ordemServicoService.buscarPorClienteNome(nome);
+	public List<OrdemServicoResponseDTO> buscarPorClienteNome(@RequestParam String nome) {
+		return ordemServicoService.buscarPorClienteNome(nome).stream()
+				.map(OrdemServicoResponseDTO::new)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/cpf/{cpf}")
-	public List<OrdemServico> buscarPorClienteCpf(@PathVariable String cpf) {
-		return ordemServicoService.buscarPorClienteCpf(cpf);
+	public List<OrdemServicoResponseDTO> buscarPorClienteCpf(@PathVariable String cpf) {
+		return ordemServicoService.buscarPorClienteCpf(cpf).stream()
+				.map(OrdemServicoResponseDTO::new)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/status/{status}/count")
@@ -135,9 +153,11 @@ public class OrdemServicoController {
 	}
 
 	@GetMapping("/pendentes")
-	public List<OrdemServico> buscarPendentesPorPeriodo(
+	public List<OrdemServicoResponseDTO> buscarPendentesPorPeriodo(
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
 			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
-		return ordemServicoService.buscarPendentesPorPeriodo(inicio, fim);
+		return ordemServicoService.buscarPendentesPorPeriodo(inicio, fim).stream()
+				.map(OrdemServicoResponseDTO::new)
+				.collect(Collectors.toList());
 	}
 }
